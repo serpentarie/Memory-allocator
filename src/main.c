@@ -77,9 +77,12 @@ static char* test_new_region_expands_old_region() {
 static char* test_regions_expansion_other_place() {
     struct block_header* start = HEAP_START;
     void* prvt = mmap(HEAP_START + REGION_MIN_SIZE, 100,0,MAP_PRIVATE | 0x20,-1,0);
+    if (prvt == MAP_FAILED)
+        return "Mmap failed to allocate region";
     _malloc(REGION_MIN_SIZE - offsetof(struct block_header, contents));
     struct block_header* expansion = (struct block_header*)(_malloc(REGION_MIN_SIZE - offsetof(struct block_header, contents)) - offsetof(struct block_header, contents));
-    munmap(prvt, 100);
+    if (munmap(prvt, 100) == -1)
+        return "Munmap failed to free region";
     if (start->next != expansion)
         return "Wrong reference to a new region";
     if (start + offsetof(struct block_header, contents) + start->capacity.bytes == expansion)
