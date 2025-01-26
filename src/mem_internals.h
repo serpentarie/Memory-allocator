@@ -4,7 +4,6 @@
 #include <inttypes.h>
 #include <stdbool.h>
 #include <stddef.h>
-#include <stdalign.h>
 
 #define REGION_MIN_SIZE (2 * 4096)
 
@@ -16,7 +15,7 @@ inline bool region_is_invalid( const struct region* r ) { return r->addr == NULL
 typedef struct { size_t bytes; } block_capacity;
 typedef struct { size_t bytes; } block_size;
 
-struct __attribute__((aligned(8))) block_header {
+struct __attribute__((packed)) block_header {
   struct block_header*    next;
   block_capacity capacity;
   bool           is_free;
