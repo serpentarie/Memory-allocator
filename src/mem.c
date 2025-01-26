@@ -163,7 +163,7 @@ static struct block_header* grow_heap( struct block_header* restrict last, size_
     if (region_is_invalid(&new_region))
         return NULL;
     last->next = new_region.addr;
-    if (try_merge_with_next(last))
+    if (new_region.extends && try_merge_with_next(last))
         return last;
     return last->next;
 }
